@@ -30,6 +30,16 @@ export default function useRentalService() {
     }
   };
 
+  const updateRentalsOrder = async (rentalIds: string[]): Promise<boolean> => {
+    try {
+      await axios.put(`/api/rentals/order`, { rentalIds });
+      return true;
+    } catch (err) {
+      console.error('Updating rentals failed: ', err);
+      return false;
+    }
+  };
+
   const updateRental = async (
     rentalId: string,
     rental: RentalModel,
@@ -63,5 +73,6 @@ export default function useRentalService() {
     createRental,
     updateRental,
     deleteRental,
+    updateRentalsOrder,
   };
 }

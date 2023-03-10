@@ -6,12 +6,20 @@ import Rental from '../../../models/rentals';
 import { UpsertRentalSchema } from '../../../zod-schemas/Rentals';
 
 const createRental = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { location } = req.body;
+
+  const currentRentals = await Rental.find({
+    'location.city': location.city,
+    'location.state': location.state,
+  });
+
+  req.body.order = currentRentals.length;
   const rental = await Rental.create(req.body);
   res.status(201).send(rental);
 };
 
 const getRentals = async (_req: NextApiRequest, res: NextApiResponse) => {
-  const rental = await Rental.find({});
+  const rental = await Rental.find({}).sort({ order: 1 });
   res.status(201).send(rental);
 };
 
