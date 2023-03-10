@@ -8,6 +8,13 @@ export const ImageSchema = z.object({
 export const RentalSchema = z.object({
   name: z.string().min(1, 'Please enter a name for the rental.'),
   description: z.string().min(1, 'Please enter a description for the rental.'),
+  types: z
+    .array(
+      z.object({
+        type: z.string(),
+      }),
+    )
+    .min(1, 'At least one type is required'),
   keyFacts: z
     .array(
       z.object({

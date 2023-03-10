@@ -3,6 +3,7 @@ import { Schema, model, models } from 'mongoose';
 const rentalSchema = new Schema(
   {
     location: { city: String, state: String },
+    types: [{ type: { type: String } }],
     order: { type: Number, default: 0 },
     name: { type: String, required: true },
     description: { type: String, required: true },

@@ -30,7 +30,8 @@ const removeImages = async (oldImages: ImageType[], newImages: ImageType[]) => {
 
 const updateRental = async (req: NextApiRequest, res: NextApiResponse) => {
   const { rentalId } = req.query;
-  const { name, description, keyFacts, price, images, location } = req.body;
+  const { name, description, keyFacts, price, images, location, types } =
+    req.body;
   const rental = await Rental.findById(rentalId);
 
   if (!rental) {
@@ -44,6 +45,7 @@ const updateRental = async (req: NextApiRequest, res: NextApiResponse) => {
   rental.keyFacts = keyFacts || [];
   rental.food = price;
   rental.images = images;
+  rental.types = types;
 
   await rental.save();
   res.status(200).send(rental);

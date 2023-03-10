@@ -9,6 +9,7 @@ import FormSectionHeader from './FormSectionHeader';
 import KeyFactsInput from './KeyFactsInput';
 import ImagesInput from './ImagesInput';
 import PriceInput from './PriceInput';
+import RentalTypeSelect from './RentalTypeSelect';
 
 type ImageType = {
   id?: string;
@@ -52,11 +53,10 @@ export default function RentalForm({
       },
       images: [],
       keyFacts: [{ fact: '' }],
+      types: [],
       ...rental,
     },
   });
-
-  console.log('errors :>> ', errors);
 
   const keyFacts = useFieldArray({
     control,
@@ -119,6 +119,8 @@ export default function RentalForm({
             />
           )}
         />
+
+        <RentalTypeSelect control={control} error={errors?.types?.message} />
 
         <FormSectionHeader label="Prices" />
         <PriceInput control={control} />
