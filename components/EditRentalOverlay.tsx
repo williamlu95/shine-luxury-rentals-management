@@ -5,14 +5,21 @@ import { RentalModel } from '../types/rentals';
 import RentalForm from './RentalForm';
 import ConfirmationPopup from './ConfirmationPopup';
 import { useState } from 'react';
+import { Location } from '../types/locations';
 
 type Props = {
   rental?: RentalModel;
+  location: Location;
   isOpen: boolean;
   onClose: (shouldRefresh: boolean) => void;
 };
 
-export default function EditRentalOverlay({ rental, isOpen, onClose }: Props) {
+export default function EditRentalOverlay({
+  rental,
+  location,
+  isOpen,
+  onClose,
+}: Props) {
   const { updateRental, deleteRental } = useRentalService();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isUnsavedConfirmOpen, setIsUnsavedConfirmOpen] = useState(false);
@@ -23,7 +30,7 @@ export default function EditRentalOverlay({ rental, isOpen, onClose }: Props) {
       return;
     }
 
-    const isUpdated = await updateRental(rental._id, data);
+    const isUpdated = await updateRental(rental._id, data, location);
 
     if (isUpdated) {
       onClose(true);

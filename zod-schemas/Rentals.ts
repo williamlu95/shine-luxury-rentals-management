@@ -31,3 +31,7 @@ export const RentalSchema = z.object({
   }),
   images: z.array(ImageSchema).min(1, 'At least one image is required.'),
 });
+
+export const UpsertRentalSchema = RentalSchema.extend({
+  location: z.object({ city: z.string(), state: z.string() }),
+});

@@ -1,31 +1,41 @@
-import { Search, Clear, Add } from '@mui/icons-material';
+import { Search, Clear } from '@mui/icons-material';
 import {
-  Button,
+  FormControl,
   IconButton,
   InputAdornment,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Stack,
   TextField,
 } from '@mui/material';
 import { ChangeEvent } from 'react';
+import { LOCATION } from '../constants/locations';
+import { Location } from '../types/locations';
 
 type Props = {
+  location: Location;
   searchValue: string;
-  hideAddButton: boolean;
   onSearchChange: (value: string) => void;
-  onAddRentalClick: () => void;
+  onLocationChange: (location: Location) => void;
 };
 
 export default function RentalActions({
-  hideAddButton,
+  location,
   searchValue,
   onSearchChange,
-  onAddRentalClick,
+  onLocationChange,
 }: Props): JSX.Element {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(e.target.value);
   };
 
   const handleClearClick = () => onSearchChange('');
+
+  const handleLocationChange = (e: SelectChangeEvent) => {
+    const newLocation: Location = JSON.parse(e.target.value);
+    onLocationChange(newLocation);
+  };
 
   return (
     <Stack
@@ -34,6 +44,20 @@ export default function RentalActions({
       justifyContent="space-between"
       alignItems="flex-end"
     >
+      <FormControl variant="standard">
+        <Select
+          fullWidth
+          value={JSON.stringify(location)}
+          onChange={handleLocationChange}
+        >
+          {Object.values(LOCATION).map((l) => (
+            <MenuItem key={JSON.stringify(l)} value={JSON.stringify(l)}>
+              {l.city}, {l.state}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <TextField
         placeholder="Search by name"
         variant="standard"
@@ -53,13 +77,6 @@ export default function RentalActions({
           ),
         }}
       />
-
-      {!hideAddButton && (
-        <Button onClick={onAddRentalClick}>
-          <Add />
-          Add Rental
-        </Button>
-      )}
     </Stack>
   );
 }

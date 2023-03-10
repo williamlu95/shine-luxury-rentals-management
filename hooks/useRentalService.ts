@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Location } from '../types/locations';
 import { RentalModel } from '../types/rentals';
 
 export default function useRentalService() {
@@ -14,9 +15,12 @@ export default function useRentalService() {
     }
   };
 
-  const createRental = async (rental: RentalModel): Promise<boolean> => {
+  const createRental = async (
+    rental: RentalModel,
+    location: Location,
+  ): Promise<boolean> => {
     try {
-      await axios.post('/api/rentals', rental);
+      await axios.post('/api/rentals', { ...rental, location });
       toast.success('Rental successfully saved.');
       return true;
     } catch (err) {
@@ -29,9 +33,10 @@ export default function useRentalService() {
   const updateRental = async (
     rentalId: string,
     rental: RentalModel,
+    location: Location,
   ): Promise<boolean> => {
     try {
-      await axios.put(`/api/rentals/${rentalId}`, rental);
+      await axios.put(`/api/rentals/${rentalId}`, { ...rental, location });
       toast.success('Rental successfully updated.');
       return true;
     } catch (err) {

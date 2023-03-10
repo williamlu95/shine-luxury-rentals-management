@@ -3,10 +3,9 @@ import { USER_ROLE } from '../../../constants/users';
 import { withSessionRoute } from '../../../lib/withSession';
 import middleware from '../../../middleware';
 import Rental from '../../../models/rentals';
-import { RentalSchema } from '../../../zod-schemas/Rentals';
+import { UpsertRentalSchema } from '../../../zod-schemas/Rentals';
 
 const createRental = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log('req.body :>> ', req.body);
   const rental = await Rental.create(req.body);
   res.status(201).send(rental);
 };
@@ -23,7 +22,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         req,
         res,
         callback: createRental,
-        schema: RentalSchema,
+        schema: UpsertRentalSchema,
         roles: [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN],
       });
     case 'GET':

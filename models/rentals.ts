@@ -1,19 +1,9 @@
 import { Schema, model, models } from 'mongoose';
 
-export const DEFAULT_RANGE = Object.freeze({
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high',
-});
-
-export const SEATING = Object.freeze({
-  NONE: 'none',
-  SOME: 'some',
-  PLENTY: 'plenty',
-});
-
 const rentalSchema = new Schema(
   {
+    location: { city: String, state: String },
+    order: { type: Number, default: 0 },
     name: { type: String, required: true },
     description: { type: String, required: true },
     keyFacts: [{ fact: String }],

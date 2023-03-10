@@ -5,9 +5,11 @@ import EditRentalOverlay from '../components/EditRentalOverlay';
 import NavBar from '../components/NavBar';
 import RentalActions from '../components/RentalActions';
 import RentalTable from '../components/RentalTable';
+import { LOCATION } from '../constants/locations';
 import { USER_ROLE } from '../constants/users';
 import useRentalService from '../hooks/useRentalService';
 import { withSessionSsr } from '../lib/withSession';
+import { Location } from '../types/locations';
 import { RentalModel } from '../types/rentals';
 import { User } from '../types/user';
 
@@ -22,6 +24,7 @@ export default function Rentals({ user }: Props): JSX.Element {
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [rental, setRental] = useState<RentalModel>();
   const [searchValue, setSearchValue] = useState('');
+  const [location, setLocation] = useState<Location>(LOCATION.LAS_VEGAS);
 
   const fetchRentals = async () => {
     const newRentals = await getRentals();
@@ -55,6 +58,14 @@ export default function Rentals({ user }: Props): JSX.Element {
     setSearchValue(value);
   };
 
+  const handleLocationChange = (newLocation: Location) => {
+    setLocation(newLocation);
+  };
+
+  const isEditable = () => {
+    return user.role === USER_ROLE.ADMIN || user.role === USER_ROLE.SUPER_ADMIN;
+  };
+
   return (
     <Stack height="100vh">
       <NavBar userRole={user.role} />
@@ -67,10 +78,12 @@ export default function Rentals({ user }: Props): JSX.Element {
         }}
       >
         <AddRentalOverlay
+          location={location}
           isOpen={isAddDrawerOpen}
           onClose={handleDrawerClose}
         />
         <EditRentalOverlay
+          location={location}
           rental={rental}
           isOpen={isEditDrawerOpen}
           onClose={handleDrawerClose}
@@ -84,16 +97,17 @@ export default function Rentals({ user }: Props): JSX.Element {
         </Stack>
 
         <RentalActions
+          location={location}
           searchValue={searchValue}
           onSearchChange={handleSearchChange}
-          onAddRentalClick={handleButtonClick}
-          hideAddButton={user.role === USER_ROLE.MEMBER}
+          onLocationChange={handleLocationChange}
         />
 
         <RentalTable
-          hideChevron={user.role === USER_ROLE.MEMBER}
+          isEditable={isEditable()}
           rentals={filterRentals()}
           onRentalClick={handleRentalClick}
+          onAddRentalClick={handleButtonClick}
         />
       </Container>
     </Stack>

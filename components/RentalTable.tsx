@@ -13,20 +13,22 @@ import {
   Box,
 } from '@mui/material';
 import { RentalModel } from '../types/rentals';
-import { ChevronRight } from '@mui/icons-material';
+import { ChevronRight, Add } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useState } from 'react';
 
 type Props = {
-  hideChevron: boolean;
+  isEditable: boolean;
   rentals: RentalModel[];
   onRentalClick: (rental: RentalModel) => void;
+  onAddRentalClick: () => void;
 };
 
 export default function RentalTable({
-  hideChevron,
+  isEditable,
   rentals,
   onRentalClick,
+  onAddRentalClick,
 }: Props) {
   const [isAscendingName, setIsAscendingName] = useState(true);
 
@@ -75,7 +77,13 @@ export default function RentalTable({
               </TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Last Updated</TableCell>
-              <TableCell padding="checkbox" />
+              <TableCell padding="checkbox">
+                {isEditable && (
+                  <IconButton onClick={onAddRentalClick}>
+                    <Add />
+                  </IconButton>
+                )}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -104,7 +112,7 @@ export default function RentalTable({
                   {format(new Date(rental.updatedAt || ''), 'P')}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {!hideChevron && (
+                  {isEditable && (
                     <IconButton
                       onClick={handleRentalClick(rental)}
                       sx={{ p: 0 }}

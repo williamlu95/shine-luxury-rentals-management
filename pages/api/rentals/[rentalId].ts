@@ -6,7 +6,7 @@ import { withSessionRoute } from '../../../lib/withSession';
 import middleware from '../../../middleware';
 import Rental from '../../../models/rentals';
 import { ImageType } from '../../../types/rentals';
-import { RentalSchema } from '../../../zod-schemas/Rentals';
+import { UpsertRentalSchema } from '../../../zod-schemas/Rentals';
 
 const removeImages = async (oldImages: ImageType[], newImages: ImageType[]) => {
   const imagesToKeep = new Set(newImages.map((image) => image.fileName));
@@ -30,7 +30,7 @@ const removeImages = async (oldImages: ImageType[], newImages: ImageType[]) => {
 
 const updateRental = async (req: NextApiRequest, res: NextApiResponse) => {
   const { rentalId } = req.query;
-  const { name, description, keyFacts, price, images } = req.body;
+  const { name, description, keyFacts, price, images, location } = req.body;
   const rental = await Rental.findById(rentalId);
 
   if (!rental) {
@@ -38,11 +38,12 @@ const updateRental = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   await removeImages(rental.images as ImageType[], images);
-  if (name) rental.name = name;
-  if (description) rental.description = description;
-  if (keyFacts) rental.address = keyFacts;
-  if (price) rental.food = price;
-  if (images) rental.images = images;
+  rental.location = location;
+  rental.name = name;
+  rental.description = description;
+  rental.keyFacts = keyFacts || [];
+  rental.food = price;
+  rental.images = images;
 
   await rental.save();
   res.status(200).send(rental);
@@ -68,7 +69,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         req,
         res,
         callback: updateRental,
-        schema: RentalSchema,
+        schema: UpsertRentalSchema,
         roles: [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN],
       });
     case 'DELETE':

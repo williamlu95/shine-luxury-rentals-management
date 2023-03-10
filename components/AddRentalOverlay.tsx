@@ -2,22 +2,24 @@ import { Close } from '@mui/icons-material';
 import { Drawer, Typography, Button, Stack, IconButton } from '@mui/material';
 import { useState } from 'react';
 import useRentalService from '../hooks/useRentalService';
+import { Location } from '../types/locations';
 import { RentalModel } from '../types/rentals';
 import ConfirmationPopup from './ConfirmationPopup';
 import RentalForm from './RentalForm';
 
 type Props = {
+  location: Location;
   isOpen: boolean;
   onClose: (shouldRefresh: boolean) => void;
 };
 
-export default function AddRentalOverlay({ isOpen, onClose }: Props) {
+export default function AddRentalOverlay({ location, isOpen, onClose }: Props) {
   const { createRental } = useRentalService();
   const [isUnsavedConfirmOpen, setIsUnsavedConfirmOpen] = useState(false);
   const [isFormDirty, setIsFormDirty] = useState(false);
 
   const onSubmit = async (data: RentalModel) => {
-    const isCreated = await createRental(data);
+    const isCreated = await createRental(data, location);
 
     if (isCreated) {
       onClose(true);
